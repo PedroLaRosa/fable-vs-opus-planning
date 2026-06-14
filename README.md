@@ -22,6 +22,21 @@ The conditions were held as equal as possible:
 
 Each session's **cost and wall-clock time were captured live from the running session** (wall-clock includes the human's thinking and interaction time, not just model latency). The full breakdown — what each model produced, where they converged, where they diverged, and which to reach for when — is the analysis below.
 
+## The real-world context
+
+This wasn't a toy benchmark — the task is a real feature on a real product I'm building: **Aimplified Academy**, a self-hosted **LMS** (learning-management system). That's what makes the cost and time numbers meaningful: both models were doing actual work I needed done on a live codebase.
+
+**The codebase.** An Nx monorepo — a React frontend (`projects/frontend`) and a Node/TypeScript backend (`projects/services`) over Postgres, built with hexagonal architecture and vertical slicing, plus a Playwright e2e suite. Auth is passwordless (magic-link), and the platform bootstraps its first `owner` at runtime through an onboarding flow.
+
+**The problem.** The `/workshops` page was doing two jobs at once: it showed the learner's **own enrolled courses** (a "My courses" progress rail) *and* the **full catalog** to browse and enroll from. As the catalog grows, that conflation only gets worse — and there's no dedicated home for a learner to come back to and pick up where they left off.
+
+**The feature being planned.** Split those two jobs into two pages:
+
+- **`/workshops`** stays the browse-and-enroll **catalog**, with all its existing routes unchanged.
+- **`/my-library`** becomes the learner's **home** — all of their enrolled courses and workshops gathered in one place, organized Udemy-style (a continue-learning shelf, an all-courses view, and a completed view) — and the **default landing page for authenticated users**.
+
+The hard constraint I gave both models: **use only data already in the database — no new tables, columns, or tracking.** That one line is what both planning sessions had to reckon with, and it's where their depth diverged the most (see the analysis).
+
 ## What's in this repo
 
 | Path | Contents |
